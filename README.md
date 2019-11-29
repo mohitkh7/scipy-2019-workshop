@@ -13,14 +13,16 @@
 import rospy
 from std_msgs.msg import Int32
 
-rospy.init_node('topic_publisher')
+# initiating ros node
+rospy.init_node('publisher')
 
-pub = rospy.Publisher('counter', Int32, queue_size=2)
-rate = rospy.Rate(1)
+# creating publisher object
+pub = rospy.Publisher('counter', Int32, queue_size=1)
+rate = rospy.Rate(1)  # defines frequency of publishing in Hz
 
 count = 0
 while not rospy.is_shutdown():
-    pub.publish(count)
+    pub.publish(count)  # publish data over topic
     count += 1
     rate.sleep()
  ```
@@ -30,49 +32,58 @@ while not rospy.is_shutdown():
 import rospy
 from std_msgs.msg import Int32
 
+
 def callback(msg):
     print msg
 
+# initiaite ROS node
 rospy.init_node('topic_subscriber')
 
+# create subscriber object
 sub = rospy.Subscriber('counter', Int32, callback)
-rospy.spin()
 
+rospy.spin()  # avoids exiting from this script until node is stopped
  ```
  - pub_sub.py
  ```
  #!/usr/bin/env python
 import rospy
 import random
-from std_msgs.msg import Int32
+from std_msgs.msg import Int32, Bool
+
 
 rospy.init_node('pub_sub')
 
+pub = rospy.Publisher('led', Bool, queue_size=1)
+rate = rospy.Rate(1)
+
 def callback(msg):
-    rospy.loginfo("subscriber listen : %d" % msg.data)
+    """
+    turns LED ON if topic data is multiple of 5 or 7 else turn LED Off
+    :param msg: <Int32> ROS topic data 
+    :return: None
+    """
+    if msg.data % 5 == 0 or msg.data % 7 == 0:
+        # turn LED On
+        pub.publish(True)
+    else:
+        # turn LED Off
+        pub.publish(False)
 
 def subscriber():
-    sub = rospy.Subscriber('random_val', Int32, callback)
-
-def publisher():
-    pub = rospy.Publisher('random_val', Int32, queue_size=2)
-    rate = rospy.Rate(1)
-    while not rospy.is_shutdown():
-        val = random.randint(1, 100)
-        pub.publish(val)
-        rospy.loginfo("publisher published : %d" % val)
-        rate.sleep()
+    sub = rospy.Subscriber('counter', Int32, callback)
+    rospy.spin()
+    
 
 if __name__ == "__main__":
     subscriber()
-    publisher()
-
  ```
  - service_server.py
  ```
  #!/usr/bin/env python
 import rospy
 from mybot.srv import WordCount, WordCountResponse
+
 def callback(request):
     return WordCountResponse(len(request.words.split(' ')))
 
@@ -88,10 +99,13 @@ import rospy
 from mybot.srv import WordCount
 
 rospy.init_node('service_client')
+
 rospy.wait_for_service('word_count')
 word_counter = rospy.ServiceProxy('word_count', WordCount)
 
 inp = "Welcome to scipy"
+print "Input is : %s" % inp
+
 count = word_counter(inp)
 print count
 ```
@@ -102,7 +116,9 @@ import rospy
 from geometry_msgs.msg import Twist
 
 rospy.init_node('wander')
-pub = rospy.Publisher('cmd_vel', Twist, queue_size=2)
+rospy.loginfo("Node Initiated")
+
+pub = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size=2)
 rate = rospy.Rate(1)
 
 while not rospy.is_shutdown():
@@ -110,6 +126,7 @@ while not rospy.is_shutdown():
     forward.linear.x = 0.1
     pub.publish(forward)
     rate.sleep()
+
 ```
  - scipybot.py 
 ```
@@ -126,10 +143,10 @@ def callback(msg):
     # rospy.loginfo("min range : %f" % obstacle_distance)
 
 def subscriber():
-    sub = rospy.Subscriber('kobuki/laser/scan', LaserScan, callback)
+    sub = rospy.Subscriber('scan', LaserScan, callback)
 
 def publisher():
-    pub = rospy.Publisher('cmd_vel', Twist, queue_size=2)
+    pub = rospy.Publisher('cmd_vel_mux/input/teleop', Twist, queue_size=2)
     rate = rospy.Rate(1)
     moving_forward = True
 
