@@ -170,6 +170,39 @@ if __name__ == "__main__":
     publisher()
 ```
 
+## Create new service
+- Define the service call inputs and outputs in a service defination `srv/WordCount.srv` file
+```
+string words
+---
+int32 count
+```
+- Make addition to `package.xml` to reflect dependencies on message system
+```
+ <build_depend>message_generation</build_depend>
+ <exec_depend>message_runtime</exec_depend>
+```
+- In order to run `catkin_make` command, we have to update `CMakeLists.txt` as follows
+```
+find_package(catkin REQUIRED COMPONENTS
+  rospy
+  std_msgs
+  message_generation
+)
+.
+.
+add_service_files(
+  FILES
+  WordCount.srv
+)
+.
+.
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+```
+
 ## Shell Commands
 - To create new package 
 `catkin_create_pkg {package_name} [dependecies]`
