@@ -1,4 +1,8 @@
 # Robotics programming with rospy
+## Setup 
+- [Local Setup Instructions ](http://wiki.ros.org/kinetic/Installation)
+- [ROS Development Studio](https://www.theconstructsim.com/rds-ros-development-studio/)
+
  ## Create catkin workspace
  - verify you have a successful ros installation by running `rosversion -d` command in terminal. If you get `kinetic` as you are ready to dive into world of robotics.
  - create catkin workspace and ros package using following commands
