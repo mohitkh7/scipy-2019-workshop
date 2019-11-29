@@ -7,8 +7,7 @@ mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
 catkin_init_workspace
 catkin_create_pkg scipybot rospy std_msgs sensor_msgs
-```
-- 
+``` 
  ## Source Code
  - topic_publisher.py
  ```
