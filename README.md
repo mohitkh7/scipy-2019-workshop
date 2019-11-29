@@ -1,11 +1,14 @@
 # Robotics programming with rospy
-
- - Visit [https://www.theconstructsim.com/rds-ros-development-studio/](https://www.theconstructsim.com/rds-ros-development-studio/) and create free account.
- - Create new *Rosject*
- -  create new package inside *catkin_ws* using following command
- `cd catkin_ws/src`
-` catkin_create_pkg workshop rospy std_msgs`
- 
+ ## Create catkin workspace
+ - verify you have a successful ros installation by running `rosversion -d` command in terminal. If you get `kinetic` as you are ready to dive into world of robotics.
+ - create catkin workspace and ros package using following commands
+ ```
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+catkin_init_workspace
+catkin_create_pkg scipybot rospy std_msgs sensor_msgs
+```
+- 
  ## Source Code
  - topic_publisher.py
  ```
